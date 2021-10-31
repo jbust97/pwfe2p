@@ -24,7 +24,6 @@ const PacientesScreen = () => {
 						<Text style={{textAlign:'left'}}>Pantalla de pacientes</Text>
 					</View>
 			</View>
-            <FooterMenu navigation={navigation} />
         </>
 	);
 };

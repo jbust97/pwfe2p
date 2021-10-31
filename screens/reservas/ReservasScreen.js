@@ -24,7 +24,6 @@ const ReservasScreen = () => {
 						<Text style={{textAlign:'left'}}>Pantalla de reservas</Text>
 					</View>
 			</View>
-            <FooterMenu navigation={navigation} />
         </>
 	);
 };
