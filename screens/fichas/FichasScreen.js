@@ -2,8 +2,8 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import FooterMenu from '../components/FooterMenu';
 import { Box, Center, HStack, NativeBaseProvider, Text } from 'native-base';
+import FooterMenu from '../../components/FooterMenu';
 
 const styles = StyleSheet.create({
 	container: {
@@ -14,28 +14,20 @@ const styles = StyleSheet.create({
 	},
 });
 
-const TABS = {
-	PACIENTES: 'PACIENTES',
-	FICHAS: 'FICHAS',
-	RESERVAS: 'RESERVAS',
-}
-
-const HomeScreen = () => {
+const FichasScreen = () => {
 	const navigation = useNavigation();
 
-	const [activeTab, setActiveTab] = useState();
-
 	return (
-		<>
+        <>
 			<View style={styles.container}>	
 					<View>
-						<Text style={{textAlign:'left'}}>Hola probando</Text>
+						<Text style={{textAlign:'left'}}>Pantalla de Fichas</Text>
 					</View>
-				
 			</View>
-			<FooterMenu />
-		</>
+            <FooterMenu navigation={navigation} />
+        </>
 	);
 };
 
-export default HomeScreen;
+export default FichasScreen;
+
