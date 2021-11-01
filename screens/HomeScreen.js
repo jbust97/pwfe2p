@@ -5,7 +5,6 @@ import ReservasScreen from './reservas/ReservasScreen';
 import FichasScreen from './fichas/FichasScreen';
 import { TABS } from '../constants/tabs';
 
-
 const HomeScreen = () => {
 
 	const [activeTab, setActiveTab] = useState(TABS.PACIENTES);

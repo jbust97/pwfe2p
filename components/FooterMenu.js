@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HStack, Center, Text } from 'native-base';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { menus } from '../constants/menus';
+import InfoModal from './InfoModal';
 
 const styles = StyleSheet.create({
     footer: {
@@ -26,24 +27,29 @@ const styles = StyleSheet.create({
 
 const FooterMenu = ({ changeTab }) => {
 
+    const [showModal, setShowModal] = useState(false)
+
     return (
-        <HStack style={styles.footer} bg="indigo.600" alignItems="center" safeAreaBottom shadow={6} >
-            {
-                menus.map(item => (
-                    <TouchableOpacity onPress={() => changeTab(item.redirect)}>
-                        <Center px={3}>
-                            <Feather name={item.icon} size={22} color="white" />
-                            <Text style={styles.label}>{item.title}</Text>
-                        </Center>
-                    </TouchableOpacity>
-                ))
-            }
-            <TouchableOpacity>
-                <Center px={3}>
-                <Feather name="more-horizontal" size={22} color="white" />
-                </Center>
-            </TouchableOpacity>
-        </HStack>
+        <>
+            <HStack style={styles.footer} bg="indigo.600" alignItems="center" safeAreaBottom shadow={6} >
+                {
+                    menus.map(item => (
+                        <TouchableOpacity key={item.redirect} onPress={() => changeTab(item.redirect)}>
+                            <Center px={3}>
+                                <Feather name={item.icon} size={22} color="white" />
+                                <Text style={styles.label}>{item.title}</Text>
+                            </Center>
+                        </TouchableOpacity>
+                    ))
+                }
+                <TouchableOpacity onPress={() => setShowModal(true)}>
+                    <Center px={3}>
+                    <Feather name="more-horizontal" size={22} color="white" />
+                    </Center>
+                </TouchableOpacity>
+            </HStack>
+            <InfoModal showModal={showModal} setShowModal={setShowModal} />
+        </>
     );
 }
 
