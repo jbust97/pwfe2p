@@ -1,9 +1,7 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { Box, Center, HStack, Button, NativeBaseProvider, Text } from 'native-base';
-import FooterMenu from '../../components/FooterMenu';
+import { Button, Text } from 'native-base';
 
 const styles = StyleSheet.create({
 	container: {

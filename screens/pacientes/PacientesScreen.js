@@ -1,9 +1,7 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Button, SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { Box, Center, HStack, NativeBaseProvider, Text } from 'native-base';
-import FooterMenu from '../../components/FooterMenu';
+import { Button, Text } from 'native-base';
 
 const styles = StyleSheet.create({
 	container: {
@@ -22,6 +20,11 @@ const PacientesScreen = () => {
 			<View style={styles.container}>	
 					<View>
 						<Text style={{textAlign:'left'}}>Pantalla de pacientes</Text>
+                        <Button
+                            onPress={() => navigation.navigate('NuevoPacienteScreen')}
+                        >
+                            <Text>Nuevo Paciente</Text>
+                        </Button>
 					</View>
 			</View>
         </>
