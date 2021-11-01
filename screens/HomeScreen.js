@@ -25,7 +25,7 @@ const HomeScreen = () => {
 				activeTab === TABS.FICHAS &&
 				<FichasScreen />
 			}
-			<FooterMenu changeTab={setActiveTab} />
+			<FooterMenu changeTab={setActiveTab} active={activeTab} />
 		</>
 	);
 };

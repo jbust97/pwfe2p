@@ -19,13 +19,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     label: {
-        color: '#fff',
         fontSize: 12,
     }
 
 });
 
-const FooterMenu = ({ changeTab }) => {
+const FooterMenu = ({ changeTab, active }) => {
 
     const [showModal, setShowModal] = useState(false)
 
@@ -36,8 +35,8 @@ const FooterMenu = ({ changeTab }) => {
                     menus.map(item => (
                         <TouchableOpacity key={item.redirect} onPress={() => changeTab(item.redirect)}>
                             <Center px={3}>
-                                <Feather name={item.icon} size={22} color="white" />
-                                <Text style={styles.label}>{item.title}</Text>
+                                <Feather name={item.icon} size={22} color={active === item.redirect ? '#00008B' : 'white'} />
+                                <Text style={{...styles.label, color: active === item.redirect ? '#00008B' : 'white'}}>{item.title}</Text>
                             </Center>
                         </TouchableOpacity>
                     ))
