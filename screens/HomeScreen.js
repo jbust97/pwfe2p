@@ -1,25 +1,33 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+import React, { useState } from 'react';
+import FooterMenu from '../components/FooterMenu';
+import PacientesScreen from './pacientes/PacientesScreen';
+import ReservasScreen from './reservas/ReservasScreen';
+import FichasScreen from './fichas/FichasScreen';
+import { TABS } from '../constants/tabs';
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
 
-  return (
-    <View style={styles.container}>
-      <Text>HomeScreen</Text>
-    </View>
-  );
+	const [activeTab, setActiveTab] = useState(TABS.PACIENTES);
+
+	return (
+		<>
+			{
+				activeTab === TABS.PACIENTES &&
+				<PacientesScreen />
+			}
+
+			{
+				activeTab === TABS.RESERVAS &&
+				<ReservasScreen />
+			}
+
+			{
+				activeTab === TABS.FICHAS &&
+				<FichasScreen />
+			}
+			<FooterMenu changeTab={setActiveTab} active={activeTab} />
+		</>
+	);
 };
 
 export default HomeScreen;
