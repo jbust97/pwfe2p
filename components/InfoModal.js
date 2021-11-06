@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
 	Button,
 	Modal,
 	FormControl,
 	Input,
 } from "native-base";
+import { LoginContext } from '../providers/LoginContext';
 
 const InfoModal = ({ showModal, setShowModal }) => {
+
+    const {dispatch, state} = useContext(LoginContext);
     
     return (
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -16,15 +19,15 @@ const InfoModal = ({ showModal, setShowModal }) => {
                 <Modal.Body>
                     <FormControl>
                         <FormControl.Label>Nombre</FormControl.Label>
-                        <Input value="Ricardo Daniel" isReadOnly/>
+                        <Input value={state.user.nombre} isReadOnly/>
                     </FormControl>
                     <FormControl>
                         <FormControl.Label>Apellido</FormControl.Label>
-                        <Input value="Gaona Machuca" isReadOnly />
+                        <Input value={state.user.apellido} isReadOnly />
                     </FormControl>
                     <FormControl mt="3">
                         <FormControl.Label>Email</FormControl.Label>
-                        <Input value="gaonaricardo06@gmail.com" isReadOnly />
+                        <Input value={state.user.email} isReadOnly />
                     </FormControl>
                 </Modal.Body>
                 <Modal.Footer>
@@ -40,7 +43,9 @@ const InfoModal = ({ showModal, setShowModal }) => {
                         </Button>
                         <Button
                             onPress={() => {
-                                setShowModal(false)
+                                setShowModal(false);
+                                dispatch({type: "LOG_OUT"})
+                
                             }}
                             style={{backgroundColor: '#ff0000'}}
                         >
