@@ -24,7 +24,7 @@ export default function App() {
           Bienvenido
         </Heading>
         <Heading mt="1" color="coolGray.600" fontWeight="medium" size="xs">
-          Sign in to continue!
+          Inicia sesión para continuar!
         </Heading>
 
         <VStack space={3} mt="5">
@@ -35,7 +35,7 @@ export default function App() {
                 fontSize: 'xs',
                 fontWeight: 500,
               }}>
-              Email ID
+              Usuario
             </FormControl.Label>
             <Input />
           </FormControl>
@@ -46,18 +46,12 @@ export default function App() {
                 fontSize: 'xs',
                 fontWeight: 500,
               }}>
-              Password
+              Contraseña
             </FormControl.Label>
             <Input type="password" />
-            <Link
-              _text={{ fontSize: 'xs', fontWeight: '500', color: 'indigo.500' }}
-              alignSelf="flex-end"
-              mt="1">
-              Forget Password?
-            </Link>
           </FormControl>
           <Button mt="2" colorScheme="indigo" _text={{ color: 'white' }}>
-            Sign in
+            Iniciar
           </Button>
           <HStack mt="6" justifyContent="center">
             <Text fontSize="sm" color="muted.700" fontWeight={400}>
