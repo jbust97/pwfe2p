@@ -1,8 +1,9 @@
-import React from 'react';
-import { HStack, Center, Text, Icon } from 'native-base';
+import React, { useState } from 'react';
+import { HStack, Center, Text } from 'native-base';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { TABS } from '../constants/tabs';
+import { menus } from '../constants/menus';
+import InfoModal from './InfoModal';
 
 const styles = StyleSheet.create({
     footer: {
@@ -17,36 +18,37 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    
+    label: {
+        fontSize: 12,
+    }
+
 });
 
-const FooterMenu = ({ changeTab }) => {
+const FooterMenu = ({ changeTab, active }) => {
+
+    const [showModal, setShowModal] = useState(false)
+
     return (
-        <HStack style={styles.footer} bg="indigo.600" alignItems="center" safeAreaBottom shadow={6} >
-            <TouchableOpacity onPress={() => changeTab(TABS.PACIENTES)}>
-                <Center px={3}>
-                    <Feather name="users" size={22} color="white" />
-                    <Text style={{color: '#fff', fontSize: 12}}>Pacientes</Text>
-                </Center>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => changeTab(TABS.FICHAS)}>
-                <Center px={3}>
-                    <Feather name="file" size={22} color="white" />
-                    <Text style={{color: '#fff', fontSize: 12}}>Fichas</Text>
-                </Center>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => changeTab(TABS.RESERVAS)}>
-                <Center px={3}>
-                    <Feather name="calendar" size={22} color="white" />
-                    <Text style={{color: '#fff', fontSize: 12}}>Reservas</Text>
-                </Center>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <Center px={3}>
-                <Feather name="more-horizontal" size={22} color="white" />
-                </Center>
-            </TouchableOpacity>
-        </HStack>
+        <>
+            <HStack style={styles.footer} bg="indigo.600" alignItems="center" safeAreaBottom shadow={6} >
+                {
+                    menus.map(item => (
+                        <TouchableOpacity key={item.redirect} onPress={() => changeTab(item.redirect)}>
+                            <Center px={3}>
+                                <Feather name={item.icon} size={22} color={active === item.redirect ? '#00008B' : 'white'} />
+                                <Text style={{...styles.label, color: active === item.redirect ? '#00008B' : 'white'}}>{item.title}</Text>
+                            </Center>
+                        </TouchableOpacity>
+                    ))
+                }
+                <TouchableOpacity onPress={() => setShowModal(true)}>
+                    <Center px={3}>
+                    <Feather name="more-horizontal" size={22} color="white" />
+                    </Center>
+                </TouchableOpacity>
+            </HStack>
+            <InfoModal showModal={showModal} setShowModal={setShowModal} />
+        </>
     );
 }
 
