@@ -58,12 +58,12 @@ export const DateInput = ({ title, value, setValue, mode }) => {
     <TouchableOpacity style={styles.container} onPress={() => setIsOpen(true)}>
       <Text style={styles.itemTitle}>{title}</Text>
       <Text style={{ fontSize: 20, height: 40 }}>
-        {value.format('DD/MM/YYYY')}
+        {value?.format('DD/MM/YYYY') || ''}
       </Text>
       <DateTimePickerModal
         mode={mode}
         is24Hour={true}
-        date={value.toDate()}
+        date={value?.toDate()}
         onCancel={() => setIsOpen(false)}
         isVisible={isOpen}
         isDarkModeEnabled

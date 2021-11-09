@@ -8,6 +8,8 @@ import NuevaReservaScreen from './reservas/NuevaReservaScreen';
 import NuevoPacienteScreen from './pacientes/NuevoPacienteScreen';
 import SelectScreen from './SelectScreen';
 import FiltrosPacienteScreen from './pacientes/FIltrosPacienteScreen';
+import FiltrosFichaScreen from './fichas/FiltrosFichaScreen';
+import ModificarObservacionScreen from './fichas/ModificarObservacionScreen';
 
 const AppStackNavigator = createNativeStackNavigator();
 
@@ -47,10 +49,23 @@ const AppNavigator = () => {
           name="FiltrosPacienteScreen"
           component={FiltrosPacienteScreen}
           options={{
-            title: 'Nuevo paciente',
+            title: 'Filtros',
           }}
         />
-
+        <AppStackNavigator.Screen
+          name="FiltrosFichaScreen"
+          component={FiltrosFichaScreen}
+          options={{
+            title: 'Filtros',
+          }}
+        />
+        <AppStackNavigator.Screen
+          name="ModificarObservacionScreen"
+          component={ModificarObservacionScreen}
+          options={{
+            title: 'Modificar Observación',
+          }}
+        />
         <AppStackNavigator.Screen
           name="SelectScreen"
           component={SelectScreen}

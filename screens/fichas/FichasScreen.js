@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
-import { Button, Text, Spinner, Icon, List } from 'native-base';
+import { useFocusEffect, useNavigation } from '@react-navigation/core';
+import { Button, Text, Spinner, Icon, List, FlatList } from 'native-base';
 import { Table, Row, Rows } from 'react-native-table-component';
-import { get as getFichas } from '../../api/fichas';
+import { getAll as getAllFichas } from '../../api/fichas';
+import { get as getPaciente } from '../../api/pacientes';
+import { get as getCategoria } from '../../api/categoria';
 import { Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as _ from 'lodash';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
     paddingTop: 30,
     backgroundColor: '#fff',
-    justifyContent: 'center',
   },
   head: { height: 40, backgroundColor: '#f1f8ff' },
   text: { margin: 6 },
@@ -24,24 +26,56 @@ const styles = StyleSheet.create({
 const FichasScreen = () => {
   const navigation = useNavigation();
   const [isFetching, setIsFetching] = useState(true);
-  const [tableData, setTableData] = useState([
-    {
-      motivoConsulta: 'dolor en la rodilla',
-      diagnostico: 'lesion leve',
-      observacion: 'nada grave',
-      idEmpleado: { idPersona: 1 },
-      idCliente: { idPersona: 1 },
-      idTipoProducto: { idTipoProducto: 3 },
+  const [error, setError] = useState('');
+  const [data, setData] = useState([]);
+  const [filtros, setFiltros] = useState({
+    like: 'S',
+    ejemplo: {
+      idCliente: { idPersona: undefined },
+      idEmpleado: { idPersona: null },
+      fechaDesdeCadena: undefined,
+      fechaHastaCadena: undefined,
+      idTipoProducto: { idTipoProducto: undefined },
     },
-  ]);
-
-  //useEffect(() => {
-  //getFichas().then((data) => {
-  //console.log(data)
-  //setTableData(data);
-  /*setIsFetching(false);
+  });
+  const updateFiltro = (field, value) =>
+    setFiltros((prev) => {
+      if (field === 'empleado') prev.ejemplo.idCliente.idPersona = value;
+      if (field === 'cliente') prev.ejemplo.idEmpleado.idPersona = value;
+      if (field === 'fechaDesde') prev.ejemplo.fechaDesdeCadena = value;
+      if (field === 'fechaHasta') prev.ejemplo.fechaHastaCadena = value;
+      return prev;
     });
-  }, []);*/
+
+  useFocusEffect(
+    React.useCallback(() => {
+      (async () => {
+        setIsFetching(true);
+        setError(undefined);
+        const fichas = await getAllFichas(filtros);
+        await Promise.all(
+          fichas.map(async (ficha) => {
+            ficha.cliente = _.pick(
+              await getPaciente(ficha.idCliente.idPersona),
+              ['idPersona', 'nombre', 'apellido']
+            );
+            ficha.empleado = _.pick(
+              await getPaciente(ficha.idEmpleado.idPersona),
+              ['idPersona', 'nombre', 'apellido']
+            );
+            ficha.categoria = _.pick(
+              await getCategoria(ficha.idTipoProducto.idTipoProducto),
+              ['idTipoProducto', 'descripcion']
+            );
+          })
+        );
+
+        setData(fichas);
+        setIsFetching(false);
+      })();
+    }, [filtros])
+  );
+
   return (
     <>
       <View style={styles.container}>
@@ -69,13 +103,28 @@ const FichasScreen = () => {
             <Icon as={Ionicons} name="add" />
           </TouchableOpacity>
         </View>
-
-        <ScrollView>
-          {!isFetching && <Spinner style={{ marginVertical: 32 }} />}
-          {tableData.map((e) => (
-            <ListItem item={e} />
-          ))}
-        </ScrollView>
+        <TouchableOpacity
+          style={{ paddingVertical: 16, flexDirection: 'row' }}
+          onPress={() =>
+            navigation.navigate('FiltrosFichaScreen', {
+              filtros,
+              updateFiltro,
+            })
+          }
+        >
+          <Text style={{ fontSize: 16, fontWeight: 'bold', flex: 1 }}>
+            Filtros
+          </Text>
+          <Icon as={Ionicons} name="filter" size={5} color={'blue.300'} />
+        </TouchableOpacity>
+        {isFetching && <Spinner style={{ marginVertical: 32 }} />}
+        {!isFetching && (
+          <FlatList
+            data={data}
+            keyExtractor={(item) => item.idFichaClinica}
+            renderItem={({ item }) => <ListItem item={item} />}
+          />
+        )}
       </View>
     </>
   );
@@ -84,6 +133,7 @@ const FichasScreen = () => {
 export default FichasScreen;
 
 const ListItem = ({ item }) => {
+  const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen((prev) => !prev);
@@ -93,13 +143,16 @@ const ListItem = ({ item }) => {
         borderWidth: 1,
         borderRadius: 10,
         borderColor: 'lightgrey',
+        marginVertical: 8,
       }}
     >
       <TouchableOpacity
         onPress={toggle}
         style={{ flexDirection: 'row', padding: 16, alignItems: 'center' }}
       >
-        <Text style={[styles.itemTitle, { flex: 1 }]}>Nombre Paciente</Text>
+        <Text style={[styles.itemTitle, { flex: 1 }]}>
+          {`${item.cliente?.nombre || ''} ${item.cliente?.apellido || ''}`}
+        </Text>
         <Icon
           as={Entypo}
           size={5}
@@ -110,23 +163,25 @@ const ListItem = ({ item }) => {
         <View style={{ paddingHorizontal: 16 }}>
           <View style={{ flex: 1, flexDirection: 'row' }}>
             <View style={{ flex: 1, flexDirection: 'column' }}>
-              <Text style={styles.itemTitle}>Empleado</Text>
-              <Text style={styles.itemText}>{item.idCliente.idPersona}</Text>
+              <Text style={styles.itemTitle}>Fisioterapeuta</Text>
+              <Text style={styles.itemText}>{`${item.empleado?.nombre || ''} ${
+                item.empleado?.apellido || ''
+              }`}</Text>
             </View>
             <View
               style={{ flex: 1, flexDirection: 'column', paddingVertical: 4 }}
             >
               <Text style={styles.itemTitle}>Tipo Producto</Text>
-              <Text style={styles.itemText}>{item.idCliente.idPersona}</Text>
+              <Text style={styles.itemText}>{item.categoria.descripcion}</Text>
             </View>
           </View>
           <View style={{ flex: 1, paddingVertical: 4 }}>
             <Text style={styles.itemTitle}>Motivo de Consulta</Text>
-            <Text style={styles.itemText}>Empleado</Text>
+            <Text style={styles.itemText}>{item.motivoConsulta}</Text>
           </View>
           <View style={{ flex: 1, paddingVertical: 4 }}>
             <Text style={styles.itemTitle}>Diagnostico</Text>
-            <Text style={styles.itemText}>Empleado</Text>
+            <Text style={styles.itemText}>{item.diagnostico}</Text>
           </View>
           <View
             style={{
@@ -138,9 +193,16 @@ const ListItem = ({ item }) => {
           >
             <View style={{ flex: 1 }}>
               <Text style={styles.itemTitle}>Observaciones</Text>
-              <Text style={styles.itemText}>Empleado</Text>
+              <Text style={styles.itemText}>{item.observacion}</Text>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('ModificarObservacionScreen', {
+                  fichaId: item.idFichaClinica,
+                  obs: item.observacion,
+                })
+              }
+            >
               <Icon as={MaterialCommunityIcons} size={6} name="pencil" />
             </TouchableOpacity>
           </View>

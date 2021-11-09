@@ -34,7 +34,7 @@ const SelectScreen = ({
       <TouchableOpacity
         onPress={() => {
           setSelected(item.id);
-          onSelect && onSelect(item);
+          onSelect && onSelect(item.option);
         }}
         style={[styles.cell, isSelected ? styles.selectedCell : {}]}
       >
