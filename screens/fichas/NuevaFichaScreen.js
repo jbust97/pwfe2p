@@ -4,7 +4,8 @@ import React from 'react';
 import { Text, StyleSheet, SafeAreaView, ScrollView, View } from 'react-native';
 import { useState, useEffect } from 'react/cjs/react.development';
 import { TextInput, SelectInput } from '../../components/Input';
-import { get as getClientes } from '../../api/clientes';
+import { getAll as getClientes } from '../../api/pacientes';
+import { TIPO_PERSONA } from '../../constants/constants';
 
 const styles = StyleSheet.create({
   container: {
@@ -48,7 +49,10 @@ const NuevaFichaScreen = () => {
                 return options.map((persona) => ({
                   id: persona.idPersona,
                   label: persona.nombreCompleto,
-                  subLabel: `CI: ${persona.cedula}`,
+                  subLabel:
+                    persona.tipoPersona === TIPO_PERSONA.FISICA
+                      ? `CI: ${persona.cedula}`
+                      : `RUC: ${persona.ruc}`,
                 }));
               },
             })
