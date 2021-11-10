@@ -41,13 +41,14 @@ const NuevoPacienteScreen = () => {
       ...paciente,
       fechaNacimiento: paciente.fechaNacimiento.format('YYYY-MM-DD hh:mm:ss'),
     };
-
+    console.log(newPaciente);
     postPaciente(newPaciente)
       .then(() => {
         Toast.show({ description: 'Paciente creado exitosamente' });
         navigation.goBack();
       })
       .catch((e) => {
+        console.log(e);
         Toast.show({ description: e.toString() });
       });
   };

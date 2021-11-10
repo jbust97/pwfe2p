@@ -12,7 +12,7 @@ export const post = async (data) => {
   const result = await axios.post(
     config.apiURL + 'stock-nutrinatalia/persona/',
     data,
-    { headers: { usuario: 'gustavo' } }
+    { headers: { usuario: 'usuario2' } }
   );
   return result.data;
 };
