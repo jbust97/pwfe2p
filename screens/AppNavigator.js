@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -10,10 +10,16 @@ import SelectScreen from './SelectScreen';
 import FiltrosPacienteScreen from './pacientes/FIltrosPacienteScreen';
 import FiltrosFichaScreen from './fichas/FiltrosFichaScreen';
 import ModificarObservacionScreen from './fichas/ModificarObservacionScreen';
+import { LoginContext } from '../providers/LoginContext';
+import LoginScreen from './LoginScreen';
 
 const AppStackNavigator = createNativeStackNavigator();
 
 const AppNavigator = () => {
+  const { state } = useContext(LoginContext);
+  if (!state.loggedIn) {
+    return <LoginScreen />;
+  }
   return (
     <NavigationContainer>
       <AppStackNavigator.Navigator initialRouteName="HomeScreen">

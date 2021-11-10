@@ -5,9 +5,11 @@ import { Button, Text, Spinner, Icon, List, FlatList } from 'native-base';
 import { Table, Row, Rows } from 'react-native-table-component';
 import { getAll as getAllFichas } from '../../api/fichas';
 import { get as getPaciente } from '../../api/pacientes';
-import { get as getCategoria } from '../../api/categoria';
+import { get as getCategoria } from '../../api/tipoProducto';
 import { Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as _ from 'lodash';
+import { fichaFilterToParams } from '../../utils';
+import moment from 'moment';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -28,31 +30,17 @@ const FichasScreen = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState('');
   const [data, setData] = useState([]);
-  const [filtros, setFiltros] = useState({
-    like: 'S',
-    ejemplo: {
-      idCliente: { idPersona: undefined },
-      idEmpleado: { idPersona: null },
-      fechaDesdeCadena: undefined,
-      fechaHastaCadena: undefined,
-      idTipoProducto: { idTipoProducto: undefined },
-    },
-  });
+  const [filtros, setFiltros] = useState({});
+
   const updateFiltro = (field, value) =>
-    setFiltros((prev) => {
-      if (field === 'empleado') prev.ejemplo.idCliente.idPersona = value;
-      if (field === 'cliente') prev.ejemplo.idEmpleado.idPersona = value;
-      if (field === 'fechaDesde') prev.ejemplo.fechaDesdeCadena = value;
-      if (field === 'fechaHasta') prev.ejemplo.fechaHastaCadena = value;
-      return prev;
-    });
+    setFiltros((prev) => ({ ...prev, [field]: value }));
 
   useFocusEffect(
     React.useCallback(() => {
       (async () => {
         setIsFetching(true);
         setError(undefined);
-        const fichas = await getAllFichas(filtros);
+        const fichas = await getAllFichas(fichaFilterToParams(filtros));
         await Promise.all(
           fichas.map(async (ficha) => {
             ficha.cliente = _.pick(
@@ -105,12 +93,13 @@ const FichasScreen = () => {
         </View>
         <TouchableOpacity
           style={{ paddingVertical: 16, flexDirection: 'row' }}
-          onPress={() =>
+          onPress={() => {
             navigation.navigate('FiltrosFichaScreen', {
-              filtros,
               updateFiltro,
-            })
-          }
+              filtros,
+              clearFiltros: () => setFiltros({}),
+            });
+          }}
         >
           <Text style={{ fontSize: 16, fontWeight: 'bold', flex: 1 }}>
             Filtros
@@ -135,7 +124,7 @@ export default FichasScreen;
 const ListItem = ({ item }) => {
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
-
+  console.log(item);
   const toggle = () => setIsOpen((prev) => !prev);
   return (
     <View
@@ -178,6 +167,14 @@ const ListItem = ({ item }) => {
           <View style={{ flex: 1, paddingVertical: 4 }}>
             <Text style={styles.itemTitle}>Motivo de Consulta</Text>
             <Text style={styles.itemText}>{item.motivoConsulta}</Text>
+          </View>
+          <View style={{ flex: 1, paddingVertical: 4 }}>
+            <Text style={styles.itemTitle}>Fecha</Text>
+            <Text style={styles.itemText}>
+              {item.fechaHora
+                ? moment(item.fechaHora).format('DD/MM/YYYY hh:mm')
+                : '--'}
+            </Text>
           </View>
           <View style={{ flex: 1, paddingVertical: 4 }}>
             <Text style={styles.itemTitle}>Diagnostico</Text>

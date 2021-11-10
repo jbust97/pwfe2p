@@ -24,7 +24,10 @@ const SelectScreen = ({
           setOptions(opts);
           setFetching(false);
         })
-        .catch(() => setFetching(false));
+        .catch((e) => {
+          console.log(e);
+          setFetching(false);
+        });
     }, [])
   );
 

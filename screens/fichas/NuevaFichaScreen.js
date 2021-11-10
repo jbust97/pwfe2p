@@ -5,7 +5,7 @@ import { Text, StyleSheet, SafeAreaView, ScrollView, View } from 'react-native';
 import { useState, useEffect } from 'react/cjs/react.development';
 import { TextInput, SelectInput } from '../../components/Input';
 import { getAll as getClientes } from '../../api/pacientes';
-import { getAll as getTiposProducto } from '../../api/categoria';
+import { getAll as getTiposProducto } from '../../api/tipoProducto';
 import { post as postFicha } from '../../api/fichas';
 import { TIPO_PERSONA } from '../../constants/constants';
 
