@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -7,10 +7,19 @@ import NuevaFichaScreen from './fichas/NuevaFichaScreen';
 import NuevaReservaScreen from './reservas/NuevaReservaScreen';
 import NuevoPacienteScreen from './pacientes/NuevoPacienteScreen';
 import SelectScreen from './SelectScreen';
+import FiltrosPacienteScreen from './pacientes/FIltrosPacienteScreen';
+import FiltrosFichaScreen from './fichas/FiltrosFichaScreen';
+import ModificarObservacionScreen from './fichas/ModificarObservacionScreen';
+import { LoginContext } from '../providers/LoginContext';
+import LoginScreen from './LoginScreen';
 
 const AppStackNavigator = createNativeStackNavigator();
 
 const AppNavigator = () => {
+  const { state } = useContext(LoginContext);
+  if (!state.loggedIn) {
+    return <LoginScreen />;
+  }
   return (
     <NavigationContainer>
       <AppStackNavigator.Navigator initialRouteName="HomeScreen">
@@ -40,6 +49,27 @@ const AppNavigator = () => {
           component={NuevoPacienteScreen}
           options={{
             title: 'Nuevo paciente',
+          }}
+        />
+        <AppStackNavigator.Screen
+          name="FiltrosPacienteScreen"
+          component={FiltrosPacienteScreen}
+          options={{
+            title: 'Filtros',
+          }}
+        />
+        <AppStackNavigator.Screen
+          name="FiltrosFichaScreen"
+          component={FiltrosFichaScreen}
+          options={{
+            title: 'Filtros',
+          }}
+        />
+        <AppStackNavigator.Screen
+          name="ModificarObservacionScreen"
+          component={ModificarObservacionScreen}
+          options={{
+            title: 'Modificar Observación',
           }}
         />
         <AppStackNavigator.Screen

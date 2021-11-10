@@ -24,7 +24,10 @@ const SelectScreen = ({
           setOptions(opts);
           setFetching(false);
         })
-        .catch(() => setFetching(false));
+        .catch((e) => {
+          console.log(e);
+          setFetching(false);
+        });
     }, [])
   );
 
@@ -34,7 +37,7 @@ const SelectScreen = ({
       <TouchableOpacity
         onPress={() => {
           setSelected(item.id);
-          onSelect && onSelect(item);
+          onSelect && onSelect(item.option);
         }}
         style={[styles.cell, isSelected ? styles.selectedCell : {}]}
       >
