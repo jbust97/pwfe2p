@@ -4,7 +4,7 @@ import React from 'react';
 import { Text, StyleSheet, SafeAreaView, ScrollView, View } from 'react-native';
 import { useState, useEffect } from 'react/cjs/react.development';
 import { TextInput, SelectInput } from '../../components/Input';
-import { get as getClientes } from '../../api/clientes';
+import { getAll as getClientes } from '../../api/pacientes';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EmpleadoAPI from '../../api/empleados';
 import ReservaAPI from '../../api/reservas';
@@ -63,10 +63,10 @@ const NuevaReservaScreen = () => {
             horaInicioCadena: getHoraCadena(reserva.turno.horaInicio),
             horaFinCadena: getHoraCadena(reserva.turno.horaFin),
             idEmpleado: {
-                idPersona: reserva.empleado.id
+                idPersona: reserva.empleado.idPersona
             },
             idCliente: {
-                idPersona: reserva.cliente.id
+                idPersona: reserva.cliente.idPersona
             }
         }
         try {
@@ -104,7 +104,7 @@ const NuevaReservaScreen = () => {
             >
                 <SelectInput
                     title={'Empleado*'}
-                    value={reserva.empleado.label}
+                    value={reserva.empleado.nombreCompleto}
                     onPress={() =>
                         navigation.navigate('SelectScreen', {
                             fetchOptions: async () => {
@@ -113,6 +113,7 @@ const NuevaReservaScreen = () => {
                                     id: persona.idPersona,
                                     label: persona.nombreCompleto,
                                     subLabel: `CI: ${persona.cedula}`,
+                                    option: persona
                                 }));
                             },
                             onSelect: (item) => {
@@ -125,7 +126,7 @@ const NuevaReservaScreen = () => {
                 />
                 <SelectInput
                     title={'Cliente*'}
-                    value={reserva.cliente.label}
+                    value={reserva.cliente.nombreCompleto}
                     onPress={() =>
                         navigation.navigate('SelectScreen', {
                             fetchOptions: async () => {
@@ -134,6 +135,7 @@ const NuevaReservaScreen = () => {
                                     id: persona.idPersona,
                                     label: persona.nombreCompleto,
                                     subLabel: `CI: ${persona.cedula}`,
+                                    option: persona
                                 }));
                             },
                             onSelect: (item) => {
@@ -155,18 +157,24 @@ const NuevaReservaScreen = () => {
                     onPress={() =>
                         navigation.navigate('SelectScreen', {
                             fetchOptions: async () => {
-                                const options = await ReservaAPI.getAgenda(reserva.empleado.id, getFechaCadena(reserva.fecha.toISOString()));
+                                console.log(reserva.empleado);
+                                const options = await ReservaAPI.getAgenda(reserva.empleado.idPersona, getFechaCadena(reserva.fecha.toISOString()));
+                                
                                 return options.map((option) => ({
                                     label: option.horaInicio.length > 8
                                         ? option.horaInicio.substr(11, 8)
                                         : option.horaInicio,
                                     subLabel: option.horaFin.substr(11, 8),
+                                    option,
                                 }));
                             },
                             onSelect: (item) => {
+                                console.log(item)
                                 updateField('turno', {
-                                    horaInicio: item.label,
-                                    horaFin: item.subLabel
+                                    horaInicio: item.horaInicio.length > 8 ?
+                                                item.horaInicio.substr(11, 8) :
+                                                item.horaInicio,
+                                    horaFin: item.horaFin.substr(11, 8)
                                 })
                             }
                         })
@@ -193,8 +201,7 @@ const NuevaReservaScreen = () => {
                 <Button
                     borderRadius={30}
                     padding={4}
-                    onPress={() => handleSave()}
-                    disabled={!canSave}
+                    onPress={async () => await handleSave()}
                 >
                     <Text style={{ fontWeight: 'bold' }}>Guardar</Text>
                 </Button>

@@ -12,6 +12,8 @@ import FiltrosFichaScreen from './fichas/FiltrosFichaScreen';
 import ModificarObservacionScreen from './fichas/ModificarObservacionScreen';
 import { LoginContext } from '../providers/LoginContext';
 import LoginScreen from './LoginScreen';
+import FiltrosReservaScreen from './reservas/FiltrosReservaScreen';
+import ModificarReservaScreen from './reservas/ModificarReservaScreen';
 
 const AppStackNavigator = createNativeStackNavigator();
 
@@ -75,6 +77,20 @@ const AppNavigator = () => {
         <AppStackNavigator.Screen
           name="SelectScreen"
           component={SelectScreen}
+        />
+        <AppStackNavigator.Screen
+          name="FiltrosReservaScreen"
+          component={FiltrosReservaScreen}
+          options={{
+            title: 'Filtros',
+          }}
+        />
+        <AppStackNavigator.Screen
+          name="ModificarReservaScreen"
+          component={ModificarReservaScreen}
+          options={{
+            title: 'Modificar Reserva',
+          }}
         />
       </AppStackNavigator.Navigator>
     </NavigationContainer>
