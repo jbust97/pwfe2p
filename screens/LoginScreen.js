@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import {
   NativeBaseProvider,
@@ -18,23 +18,22 @@ import {
 } from 'native-base';
 import LoginApi from '../api/LoginApi';
 import { LoginContext } from '../providers/LoginContext';
-
-
+import { Keyboard } from 'react-native';
 
 export default function LoginScreen() {
-
-  const [userName, setUserName] = useState("");
-  const {dispatch} = useContext(LoginContext);
+  const [userName, setUserName] = useState('');
+  const { dispatch } = useContext(LoginContext);
 
   const getUser = async () => {
+    Keyboard.dismiss();
     let data = await LoginApi.getUsers();
-    let user = data.lista.find((usuario)=>usuario.usuarioLogin === userName);
-    if (user == undefined){
-      Toast.show({description: "No existe el usuario"})
-    }else{
-      dispatch({type:"LOG_IN", payload:user})
+    let user = data.lista.find((usuario) => usuario.usuarioLogin === userName);
+    if (user == undefined) {
+      Toast.show({ description: 'No existe el usuario' });
+    } else {
+      dispatch({ type: 'LOG_IN', payload: user });
     }
-  }
+  };
 
   return (
     <NativeBaseProvider>
@@ -53,10 +52,14 @@ export default function LoginScreen() {
                 color: 'coolGray.800',
                 fontSize: 'xs',
                 fontWeight: 500,
-              }}>
+              }}
+            >
               Usuario
             </FormControl.Label>
-            <Input value={userName} onChangeText={(text)=>setUserName(text)}/>
+            <Input
+              value={userName}
+              onChangeText={(text) => setUserName(text)}
+            />
           </FormControl>
           <FormControl>
             <FormControl.Label
@@ -64,12 +67,18 @@ export default function LoginScreen() {
                 color: 'coolGray.800',
                 fontSize: 'xs',
                 fontWeight: 500,
-              }}>
+              }}
+            >
               Contraseña
             </FormControl.Label>
             <Input type="password" />
           </FormControl>
-          <Button mt="2" colorScheme="indigo" _text={{ color: 'white' }} onPress={getUser}>
+          <Button
+            mt="2"
+            colorScheme="indigo"
+            _text={{ color: 'white' }}
+            onPress={getUser}
+          >
             Iniciar
           </Button>
         </VStack>
